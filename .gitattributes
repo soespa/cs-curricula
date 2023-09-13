@@ -1,0 +1,4 @@
+*.ckpt filter=lfs diff=lfs merge=lfs -text
+mlr/model/epoch=17-step=90.ckpt filter=lfs diff=lfs merge=lfs -text
+models/model_final.pkl filter=lfs diff=lfs merge=lfs -text
+*.pkl filter=lfs diff=lfs merge=lfs -text
