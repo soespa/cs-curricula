@@ -7,7 +7,9 @@ import pandas as pd
 from bertopic import BERTopic
 import os
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 from umap import UMAP
+import stanza
 
 OTHER_LABEL = 'Sonstiges'
 
@@ -50,6 +52,9 @@ custom_names = {
     19: "Suchmaschinen"
 }
 
+color_sek1 = 'rgb(180, 120, 20)'
+color_sek2 = 'rgb(20, 120, 180)'
+
 
 class CurriculaAnalysis():
 
@@ -62,6 +67,8 @@ class CurriculaAnalysis():
         self.topic_model = BERTopic.load(os.path.join('model', 'topic_model_merged.pkl'))
 
         self.df = self.sentences.merge(self.documents, left_on='document', right_index=True, how='left')
+
+        #self.nlp = stanza.Pipeline(lang='de', processors='tokenize,mwt,pos,lemma')
 
     @property
     def df_topics(self):
@@ -128,6 +135,9 @@ class CurriculaAnalysis():
     def n_sentences(self):
         return len(self.sentences)
 
+    def sentences_per_curriculum(self):
+        lengths = self.df.groupby(['bundesland', 'stufe']).apply(lambda g: len(g)).unstack(level=1)
+
 
     def plot_level(self):
         df_props = self.df_props
@@ -136,12 +146,7 @@ class CurriculaAnalysis():
 
         df_curricula = df_props.groupby(['bundesland', 'stufe'], as_index=False).mean()
 
-        st.write(df_curricula)
-
-
-        #df_level = df_curricula.groupby('bundesland', as_index=False).apply(lambda g: g.set_index('stufe').unstack())
-
-        st.write(df_level)
+        df_level = df_curricula.drop('bundesland', axis=1).groupby('stufe').mean().T
 
         df_level['diff'] = (1 - (df_level['Sekundarstufe I'] / df_level['Sekundarstufe II'])) * 100
 
@@ -170,10 +175,10 @@ class CurriculaAnalysis():
         for index, row in df_level.iterrows():
             value = row['diff']
             if value > 0:
-                color = 'rgb(80, 180, 80)'
+                color = color_sek1
                 text = f"+{row['diff'].round(1)}%"
             elif value < 0:
-                color = 'rgb(180, 80, 80)'
+                color = color_sek2
                 text = f"{row['diff'].round(1)}%"
             else:
                 color = 'rgb(220, 220, 220)'
@@ -189,7 +194,7 @@ class CurriculaAnalysis():
                     text=text,
                     font=dict(
                         family='Arial',
-                        size=14,
+                        size=11,
                         color=color
                     ),
                     showarrow=False
@@ -199,35 +204,140 @@ class CurriculaAnalysis():
         return fig
 
 
-def plot_states(topic_model: BERTopic, df: pd.DataFrame):
-    topics = topic_model.get_topic_info()
+    def plot_states(self):
+        df_props = self.df_props
 
-    probabilities = topic_model.probabilities_
-    label = topics['CustomName'].tolist()
+        df_props = (df_props.groupby(['bundesland', 'stufe']).mean() * 100).round(2)
 
-    print(label)
-    prop = pd.DataFrame(probabilities, columns=label[1:])
+        sek1 = df_props.xs('Sekundarstufe I', level=1).drop(OTHER_LABEL, axis=1)
+        sek2 = df_props.xs('Sekundarstufe II', level=1).drop(OTHER_LABEL, axis=1)
 
-    prop[OTHER_LABEL] = 1 - prop.sum(axis=1)
+        #sek1 = (sek1 - sek1.mean()) / sek1.std()
 
-    prop[df['bundesland'].isin(COMPLETE_STATES)]
-
-    df_grouped = pd.concat([df[['bundesland', 'stufe']], pd.DataFrame(topic_model.probabilities_)], axis=1)
-    df_agg = df_grouped.groupby(['bundesland', 'stufe']).mean()
-
-    # agg = cur_df.rename(short_labels, axis=1)
-
-    df_agg = df_agg.loc[(COMPLETE_STATES)]
-
-    df_agg = df_agg.groupby('bundesland').mean()
-
-    fig = go.Figure(
-        data=go.Heatmap(
-            z=df_agg,
-            x=df_agg.columns,
-            y=label,
-            hoverongaps=False
+        fig = make_subplots(
+            rows=2,
+            cols=1,
+            subplot_titles=[
+                'Sekundarstufe I',
+                'Sekundarstufe II'
+            ],
+            shared_xaxes=True,
+            vertical_spacing=0.1
         )
-    )
 
-    return fig
+
+        fig.add_trace(
+            go.Heatmap(
+                z=sek1,
+                x=sek1.columns,
+                y=sek1.index,
+                #text=sek1,
+            ),
+            row=1,
+            col=1
+        )
+
+        fig.add_trace(
+            go.Heatmap(
+                z=sek2,
+                x=sek2.columns,
+                y=sek2.index,
+                #text=sek2,
+            ),
+            row=2,
+            col=1
+        )
+
+        fig.update_layout(
+            height=1200,
+            legend=dict(
+                orientation='h'
+            ),
+            coloraxis_colorbar=dict(
+                x=0.5,  # Set the x-coordinate to position the colorbar at the top
+                xanchor="center",  # Anchor point for x-coordinate
+                y=1.1,  # Set the y-coordinate to control the distance from the top
+                yanchor="bottom",  # Anchor point for y-coordinate
+                lenmode="fraction",  # Length of the colorbar relative to the plot (fraction)
+                len=0.2,  # Set the length of the colorbar to span the entire plot
+                thicknessmode="fraction",  # Thickness of the colorbar relative to the plot (fraction)
+                thickness=0.03,  # Set the thickness of the colorbar
+                tickmode="auto",  # Automatically determine colorbar ticks
+                tickvals=None,  # Customize tick values if needed
+                orientation="h"  # Set the orientation to horizontal
+            )
+        )
+
+        return fig
+
+
+    def plot_topic_similarity(self):
+        fig = self.topic_model.visualize_hierarchy(custom_labels=True)
+
+        fig.update_layout(
+            template="plotly",
+            title='',
+            xaxis=dict(
+                title='Cosine Distance'
+            )
+        )
+
+        return fig
+
+
+    def plot_sentences(self):
+        fig = self.topic_model.visualize_documents(self.docs, custom_labels=True, hide_annotations=True)
+
+        fig.update_layout(
+            template="plotly",
+            legend=dict(
+                yanchor="top",
+                y=-0.01,
+                xanchor="center",
+                x=0.5
+            ),
+            height=1400
+        )
+
+        return fig
+
+
+    def get_topic(self, topic_name, threshold=0.8):
+
+        df_topics = self.df_topics
+
+        topic = df_topics[df_topics['Thema'] == topic_name].index[0]
+
+        df_props = self.df_props
+
+        docs = self.df[df_props[topic_name] > threshold]
+
+        docs = docs[['raw_sentence', 'bundesland', 'stufe', 'titel']]
+
+        docs = docs.rename({
+            'raw_sentence': 'Phrase',
+            'bundesland': 'Bundesland',
+            'stufe': 'Stufe',
+            'titel': 'Abschnitt'
+        }, axis=1)
+
+        return docs
+
+    def search_term(self, search_term, threshold=0.5):
+
+        search_term = search_term.lower()
+
+        topics, props = self.topic_model.find_topics(search_term=search_term)
+        s = pd.Series(props, index=topics)
+
+        s = s[s > threshold]
+
+        result = None
+
+        if len(s) > 0:
+            df_topics = self.df_topics
+
+            result = df_topics.loc[s.index]
+
+
+        return result
