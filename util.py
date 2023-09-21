@@ -8,8 +8,6 @@ from bertopic import BERTopic
 import os
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from umap import UMAP
-import stanza
 
 OTHER_LABEL = 'Sonstiges'
 
