@@ -205,7 +205,7 @@ class CurriculaAnalysis():
     def plot_states(self):
         df_props = self.df_props
 
-        df_props = (df_props.groupby(['bundesland', 'stufe']).mean() * 100).round(2)
+        df_props = (df_props.groupby(['bundesland', 'stufe']).mean() * 100)
 
         sek1 = df_props.xs('Sekundarstufe I', level=1).drop(OTHER_LABEL, axis=1)
         sek2 = df_props.xs('Sekundarstufe II', level=1).drop(OTHER_LABEL, axis=1)
@@ -229,7 +229,15 @@ class CurriculaAnalysis():
                 z=sek1,
                 x=sek1.columns,
                 y=sek1.index,
-                #text=sek1,
+                text=sek1.round(1),
+                texttemplate="%{text}",
+                textfont={"size": 12},
+                colorbar=dict(
+                    y=0.25,
+                    yanchor='middle',
+                    lenmode="fraction",  # Length of the colorbar relative to the plot (fraction)
+                    len=0.4,  # Set the length of the colorbar to span the entire plots
+                )
             ),
             row=1,
             col=1
@@ -240,30 +248,28 @@ class CurriculaAnalysis():
                 z=sek2,
                 x=sek2.columns,
                 y=sek2.index,
-                #text=sek2,
+                text=sek2.round(1),
+                texttemplate="%{text}",
+                textfont={"size": 12},
+                colorbar=dict(
+                    y=0.75,
+                    yanchor='middle',
+                    lenmode="fraction",  # Length of the colorbar relative to the plot (fraction)
+                    len=0.4,  # Set the length of the colorbar to span the entire plots
+                )
             ),
             row=2,
             col=1
         )
 
+        fig.update_yaxes(
+            scaleanchor='x',
+            scaleratio=1,
+            #showgrid=False
+        )
+
         fig.update_layout(
-            height=1200,
-            legend=dict(
-                orientation='h'
-            ),
-            coloraxis_colorbar=dict(
-                x=0.5,  # Set the x-coordinate to position the colorbar at the top
-                xanchor="center",  # Anchor point for x-coordinate
-                y=1.1,  # Set the y-coordinate to control the distance from the top
-                yanchor="bottom",  # Anchor point for y-coordinate
-                lenmode="fraction",  # Length of the colorbar relative to the plot (fraction)
-                len=0.2,  # Set the length of the colorbar to span the entire plot
-                thicknessmode="fraction",  # Thickness of the colorbar relative to the plot (fraction)
-                thickness=0.03,  # Set the thickness of the colorbar
-                tickmode="auto",  # Automatically determine colorbar ticks
-                tickvals=None,  # Customize tick values if needed
-                orientation="h"  # Set the orientation to horizontal
-            )
+            #height=1200,
         )
 
         return fig

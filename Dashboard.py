@@ -51,9 +51,10 @@ Die einzelnen Schritte werden im folgenden kurz beschrieben:
 3. Die Vektoren werden mit Hilfe von Clustering-Algorithmen gruppiert. Jeder Cluster repräsentiert ein Thema.
 4. Für jedes Thema werden die Schlüsselwörter (Wörter, die im Zusammenhang mit dem Thema häufig auftreten) ermittelt.
 
-Im ersten Schritt mit Hilfe von BERTopic 66 Themen identifiziert, die anschließend manuell zu Oberthemen gruppiert
+Im ersten Schritt mit Hilfe von BERTopic 66 Themen identifiziert, die anschließend manuell zu 20 Oberthemen gruppiert
 wurden (siehe Tabelle), um die Übersichtlichkeit zu erhöhen.
-Dabei sollte jedoch beachtet werden, dass diese Zusammenführung dazu führen kann, dass ein Thema Unterthemen enthält, die nicht direkt ersichtlich sind.
+Dabei sollte beachtet werden, dass eine solche Zusammenführung dazu führen kann, dass ein Thema Unterthemen enthält,
+die nicht direkt aus dem Oberthema ersichtlich sind.
 
 ''')
 
@@ -69,6 +70,12 @@ st.download_button(
 )
 
 st.markdown('## Anteil der Themen insgesamt')
+
+st.markdown('''
+Im folgenden ist der Anteil der Themen im Durchschnitt über alle Lehrpläne dargestellt.
+Als Grundlage für die Berechnung (und alle nachfolgenden Berechnungen) dient die Wahrscheinlichkeitsmatrix $A=(a_{ij})_{i=1,...,m;j=1,...,n}$, welche von dem Modell ermittelt wurde.
+Der Eintrag $(a_{ij})$ ist die ermittelte Wahrscheinlichkeit, dass der i-te Satz zu dem j-ten Thema gehört.
+''')
 
 fig = analysis.get_total_topic_dist()
 
@@ -90,6 +97,13 @@ with st.expander(label='Details'):
 
 
 st.markdown('## Schwerpunkt nach Stufe')
+
+st.markdown('''
+Die nachfolgende Darstellung zeigt, wie sich der Schwerpunkt der Themen von der Sekundarstufe I zu der Sekundarstufe II
+verschiebt.
+
+
+''')
 
 fig = analysis.plot_level()
 
