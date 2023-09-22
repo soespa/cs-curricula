@@ -1,10 +1,5 @@
 import pandas as pd
 from bertopic import BERTopic
-import plotly.graph_objects as go
-import numpy as np
-import streamlit as st
-import pandas as pd
-from bertopic import BERTopic
 import os
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
@@ -41,7 +36,7 @@ custom_names = {
     10: "Berechenbarkeit und Komplexität",
     11: "Programmiersprachen, Funktionale und Logische Programmierung",
     12: "Fehlerbehebung und Debugging",
-    13: "Bewerten und Analysieren",
+    13: "Analysieren und Bewerten",
     14: "Variablen und Datentypen",
     15: "Strukturieren und Vernetzen",
     16: "Simulationen",
