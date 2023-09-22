@@ -5,7 +5,7 @@ from bertopic import BERTopic
 import os
 import plotly.graph_objects as go
 from umap import UMAP
-from .util import CurriculaAnalysis
+from util import CurriculaAnalysis
 
 st.set_page_config(
     page_title="Topic Model",
