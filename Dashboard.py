@@ -137,7 +137,7 @@ df_topics = analysis.df_topics
 
 st.markdown('## Themen im Detail')
 
-selection = st.selectbox(label='Thema', options=df_topics['Thema'])
+selection = st.selectbox(key='select_topic', label='Thema', options=df_topics['Thema'])
 
 threshold = st.slider(label='Grenzwert', value=0.8, min_value=0.5, max_value=1.0, step=0.05)
 
