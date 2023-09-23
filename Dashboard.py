@@ -13,7 +13,11 @@ st.set_page_config(
     initial_sidebar_state='collapsed'
 )
 
-analysis = CurriculaAnalysis()
+
+if "analysis" not in st.session_state:
+    st.session_state["analysis"] = CurriculaAnalysis
+
+analysis = st.session_state["analysis"]
 
 st.markdown('# Topic Model für die Kernlehrpläne Informatik Sekundarstufe I & II')
 
