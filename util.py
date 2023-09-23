@@ -4,6 +4,8 @@ from bertopic import BERTopic
 import os
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import streamlit as st
+from dataclasses import dataclass
 
 OTHER_LABEL = 'Sonstiges'
 
@@ -50,6 +52,7 @@ color_sek1 = 'rgb(180, 120, 20)'
 color_sek2 = 'rgb(20, 120, 180)'
 
 
+@dataclass(frozen=True)
 class CurriculaAnalysis():
 
     def __init__(self):
@@ -111,6 +114,7 @@ class CurriculaAnalysis():
 
         return df_props
 
+    @st.cache_resource
     def get_total_topic_dist(self):
 
         # Calculate mean for each curriculum
@@ -128,6 +132,7 @@ class CurriculaAnalysis():
 
         return fig
 
+    @st.cache_resource
     def get_topic_dist_for_level(self):
 
         # Calculate mean for each curriculum
@@ -177,18 +182,21 @@ class CurriculaAnalysis():
     def n_states(self):
         return len(self.documents['bundesland'].unique())
 
+
     @property
     def n_curricula(self):
         return len(self.documents.groupby(['bundesland', 'stufe']))
+
 
     @property
     def n_sentences(self):
         return len(self.sentences)
 
+    @st.cache_resource
     def sentences_per_curriculum(self):
         lengths = self.df.groupby(['bundesland', 'stufe']).apply(lambda g: len(g)).unstack(level=1)
 
-
+    @st.cache_resource
     def plot_level(self):
         df_props = self.df_props
 
@@ -266,6 +274,7 @@ class CurriculaAnalysis():
 
         return fig
 
+    @st.cache_resource
     def plot_level_barpolar(self):
         df_props = self.df_props
 
@@ -318,9 +327,7 @@ class CurriculaAnalysis():
 
         return fig
 
-
-
-
+    @st.cache_resource
     def plot_states(self, level=None):
         df_props = self.df_props
 
@@ -367,7 +374,7 @@ class CurriculaAnalysis():
 
         return fig
 
-
+    @st.cache_resource
     def plot_topic_similarity(self):
         fig = self.topic_model.visualize_hierarchy(custom_labels=True)
 
@@ -381,7 +388,7 @@ class CurriculaAnalysis():
 
         return fig
 
-
+    @st.cache_resource
     def plot_sentences(self):
         fig = self.topic_model.visualize_documents(self.docs, custom_labels=True, hide_annotations=True)
 
@@ -398,7 +405,7 @@ class CurriculaAnalysis():
 
         return fig
 
-
+    @st.cache_resource
     def get_topic(self, topic_name, threshold=0.8):
 
         df_topics = self.df_topics
@@ -422,11 +429,14 @@ class CurriculaAnalysis():
 
         return docs
 
+    @st.cache_resource
     def search_term(self, search_term, threshold=0.5):
 
         search_term = search_term.lower()
 
         topics, props = self.topic_model.find_topics(search_term=search_term)
+
+
         s = pd.Series(props, index=topics)
 
         s = s[s > threshold]
@@ -441,7 +451,7 @@ class CurriculaAnalysis():
 
         return result
 
-
+    @st.cache_resource
     def get_curriculum(self, state, level):
         df = self.df.copy()
         df = df[(df['bundesland'] == state) & (df['stufe'] == level)]
@@ -449,6 +459,7 @@ class CurriculaAnalysis():
 
         return df
 
+    @st.cache_resource
     def plot_duality(self):
         duality = self.duality
         duality = duality.groupby(self.topic_model.topics_).mean()
