@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from bertopic import BERTopic
 import os
@@ -63,6 +64,17 @@ class CurriculaAnalysis():
 
         #self.nlp = stanza.Pipeline(lang='de', processors='tokenize,mwt,pos,lemma')
 
+        self.duality = pd.read_json(os.path.join('data', 'duality.json'))
+
+
+    @property
+    def states(self):
+        return sorted(self.df['bundesland'].unique())
+
+    @property
+    def level(self):
+        return sorted(self.df['stufe'].unique())
+
     @property
     def df_topics(self):
         """
@@ -116,6 +128,51 @@ class CurriculaAnalysis():
 
         return fig
 
+    def get_topic_dist_for_level(self):
+
+        # Calculate mean for each curriculum
+        prop = self.df_props.groupby(['bundesland', 'stufe']).mean()
+
+        fig = make_subplots(
+            rows=1,
+            cols=2,
+            specs=[[{"type": "pie"}, {"type": "pie"}]],
+            subplot_titles=['Sekundarstufe I', 'Sekundarstufe II']
+        )
+
+        sek1 = prop.xs('Sekundarstufe I', level=1)
+        sek2 = prop.xs('Sekundarstufe II', level=1)
+
+        fig.add_trace(
+            go.Pie(
+                labels=sek1.columns,
+                values=sek1.mean(),
+                hole=0.3,
+                showlegend=False,
+                name='Sekundarstufe I'
+            ),
+            row=1,
+            col=1
+        )
+
+        fig.add_trace(
+            go.Pie(
+                labels=sek2.columns,
+                values=sek2.mean(),
+                hole=0.3,
+                showlegend=False,
+                name='Sekundarstufe II'
+            ),
+            row=1,
+            col=2
+        )
+
+        fig.update_layout(
+            margin=dict(l=100, r=100, t=50, b=50),
+        )
+
+        return fig
+
     @property
     def n_states(self):
         return len(self.documents['bundesland'].unique())
@@ -141,9 +198,18 @@ class CurriculaAnalysis():
 
         df_level = df_curricula.drop('bundesland', axis=1).groupby('stufe').mean().T
 
-        df_level['diff'] = (1 - (df_level['Sekundarstufe I'] / df_level['Sekundarstufe II'])) * 100
+        df_level = df_level*100
+
+        df_level['diff'] = df_level['Sekundarstufe I'] - df_level['Sekundarstufe II']
 
         df_level = df_level.sort_values('diff')
+
+        diff_trace = go.Bar(
+                    name='Differenz',
+                    y=df_level.index,
+                    x=df_level['diff'],
+                    orientation='h'
+                )
 
         fig = go.Figure(
             data=[
@@ -158,10 +224,12 @@ class CurriculaAnalysis():
                     y=df_level.index,
                     x=df_level['Sekundarstufe I'],
                     orientation='h'
-                )
+                ),
+                diff_trace
             ],
             layout=go.Layout(
                 height=800,
+                template='plotly_dark'
             )
         )
 
@@ -169,13 +237,15 @@ class CurriculaAnalysis():
             value = row['diff']
             if value > 0:
                 color = color_sek1
-                text = f"+{row['diff'].round(1)}%"
+                text = f"+{row['diff'].round(2)}"
             elif value < 0:
                 color = color_sek2
-                text = f"{row['diff'].round(1)}%"
+                text = f"{row['diff'].round(2)}"
             else:
                 color = 'rgb(220, 220, 220)'
-                text = f"{row['diff'].round(1)}%"
+                text = f"{row['diff'].round(2)}"
+
+            color = diff_trace.marker.color
 
             fig.add_annotation(
                 dict(
@@ -196,75 +266,103 @@ class CurriculaAnalysis():
 
         return fig
 
-
-    def plot_states(self):
+    def plot_level_barpolar(self):
         df_props = self.df_props
 
-        df_props = (df_props.groupby(['bundesland', 'stufe']).mean() * 100)
+        df_props = df_props[df_props['bundesland'].isin(COMPLETE_STATES)]
 
-        sek1 = df_props.xs('Sekundarstufe I', level=1).drop(OTHER_LABEL, axis=1)
-        sek2 = df_props.xs('Sekundarstufe II', level=1).drop(OTHER_LABEL, axis=1)
+        df_props = df_props.drop(OTHER_LABEL, axis=1)
 
-        #sek1 = (sek1 - sek1.mean()) / sek1.std()
+        df_curricula = df_props.groupby(['bundesland', 'stufe'], as_index=False).mean()
 
-        fig = make_subplots(
-            rows=2,
-            cols=1,
-            subplot_titles=[
-                'Sekundarstufe I',
-                'Sekundarstufe II'
+
+        df_level = df_curricula.drop('bundesland', axis=1).groupby('stufe').mean().T
+
+
+        #df_level['diff'] = df_level['Sekundarstufe I'] - df_level['Sekundarstufe II']
+
+
+        order = df_level.mean(axis=1).sort_values(ascending=False).index
+
+        df_level = df_level.loc[order]
+
+        #df_level = df_level.sort_values('diff')
+
+        fig = go.Figure(
+            data=[
+                go.Barpolar(
+                    name='Sekundarstufe II',
+                    theta=df_level.index,
+                    r=np.sqrt(df_level['Sekundarstufe II']),
+                    #fill='toself',
+                    base=0,
+                    opacity=0.8
+                ),
+                go.Barpolar(
+                    name='Sekundarstufe I',
+                    theta=df_level.index,
+                    r=np.sqrt(df_level['Sekundarstufe I']),
+                    #fill='toself',
+                    base=0,
+                    opacity=0.8
+                )
             ],
-            shared_xaxes=True,
-            vertical_spacing=0.1
+            layout=go.Layout(
+                #width=300,
+                template='plotly_dark',
+                barmode='overlay',
+                margin=dict(l=200, r=200, t=50, b=50),
+            )
         )
 
 
-        fig.add_trace(
+        return fig
+
+
+
+
+    def plot_states(self, level=None):
+        df_props = self.df_props
+
+        df_props = (df_props.groupby(['bundesland', 'stufe']).mean() * 100).drop(OTHER_LABEL, axis=1)
+
+        if level in ['Sekundarstufe I', 'Sekundarstufe II']:
+            #df = df_props[df_props['stufe'] == level].drop('bunde')
+            df = df_props.xs(level, level=1)
+        elif level == 'Sekundarstufe I & II':
+
+            df = df_props.reset_index()
+
+            df = df[df['bundesland'].isin(COMPLETE_STATES)]
+
+            df = df.drop('stufe', axis=1).groupby('bundesland').mean()
+
+
+            #df = df_props[df_props['bundesland'].isin(COMPLETE_STATES)].groupby('bundesland').mean()
+
+        fig = go.Figure(
             go.Heatmap(
-                z=sek1,
-                x=sek1.columns,
-                y=sek1.index,
-                text=sek1.round(1),
+                z=df,
+                x=df.columns,
+                y=df.index,
+                text=df.round(1),
                 texttemplate="%{text}",
                 textfont={"size": 12},
-                colorbar=dict(
-                    y=0.25,
-                    yanchor='middle',
-                    lenmode="fraction",  # Length of the colorbar relative to the plot (fraction)
-                    len=0.4,  # Set the length of the colorbar to span the entire plots
-                )
-            ),
-            row=1,
-            col=1
+            )
         )
 
-        fig.add_trace(
-            go.Heatmap(
-                z=sek2,
-                x=sek2.columns,
-                y=sek2.index,
-                text=sek2.round(1),
-                texttemplate="%{text}",
-                textfont={"size": 12},
-                colorbar=dict(
-                    y=0.75,
-                    yanchor='middle',
-                    lenmode="fraction",  # Length of the colorbar relative to the plot (fraction)
-                    len=0.4,  # Set the length of the colorbar to span the entire plots
-                )
-            ),
-            row=2,
-            col=1
-        )
 
-        fig.update_yaxes(
-            scaleanchor='x',
-            scaleratio=1,
+        #fig1.update_yaxes(
+        #    scaleanchor='x',
+        #    scaleratio=1,
             #showgrid=False
-        )
+        #)
 
         fig.update_layout(
-            #height=1200,
+            height=800,
+            xaxis=dict(
+                tickangle=60  # Set the desired tickangle (e.g., 45 degrees)
+            )
         )
 
         return fig
@@ -274,7 +372,7 @@ class CurriculaAnalysis():
         fig = self.topic_model.visualize_hierarchy(custom_labels=True)
 
         fig.update_layout(
-            template="plotly",
+            template="plotly_dark",
             title='',
             xaxis=dict(
                 title='Cosine Distance'
@@ -320,6 +418,8 @@ class CurriculaAnalysis():
             'titel': 'Abschnitt'
         }, axis=1)
 
+        docs = docs.reset_index(drop=True)
+
         return docs
 
     def search_term(self, search_term, threshold=0.5):
@@ -340,3 +440,50 @@ class CurriculaAnalysis():
 
 
         return result
+
+
+    def get_curriculum(self, state, level):
+        df = self.df.copy()
+        df = df[(df['bundesland'] == state) & (df['stufe'] == level)]
+
+
+        return df
+
+    def plot_duality(self):
+        duality = self.duality
+        duality = duality.groupby(self.topic_model.topics_).mean()
+
+        duality = duality.drop(-1)
+
+        topics = self.topic_model.get_topic_info().set_index('Topic')
+
+        duality.index = map(lambda topic: topics.loc[topic]['CustomName'], duality.index)
+
+        order = (duality['architecture'] / duality['relevance']).sort_values().index
+
+        duality = duality.loc[order]
+
+        fig = go.Figure(
+            data=[
+                go.Bar(
+                    y=duality.index,
+                    x=duality['architecture'],
+                    name='Architektur',
+                    orientation='h'
+                ),
+                go.Bar(
+                    y=duality.index,
+                    x=duality['relevance'],
+                    name='Relevanz',
+                    orientation='h'
+                )
+            ],
+            layout=go.Layout(
+                height=40*len(topics),
+                template='plotly_dark'
+            )
+        )
+
+        return fig
+
+

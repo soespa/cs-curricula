@@ -38,7 +38,7 @@ Anschließend wurden die Texte mit Hilfe von regulären Ausdrücken bereinigt.
 Schließlich wurden die Texte in Phrasen zerlegt, welche die Grundlage für die Analyse darstellen.
 ''')
 
-st.markdown('## Themen')
+st.markdown('## Topic Model')
 
 st.markdown('''
 Für das Modellieren der Themen wurde [BERTopic](https://github.com/MaartenGr/BERTopic) verwendet.
@@ -80,6 +80,10 @@ fig = analysis.get_total_topic_dist()
 
 st.plotly_chart(fig, use_container_width=True)
 
+#fig = analysis.get_topic_dist_for_level()
+
+#st.plotly_chart(fig, use_container_width=True)
+
 
 with st.expander(label='Details'):
     st.markdown('## Ähnlichkeit der Themen untereinander')
@@ -100,24 +104,34 @@ st.markdown('## Schwerpunkt nach Stufe')
 st.markdown('''
 Die nachfolgende Darstellung zeigt, wie sich der Schwerpunkt der Themen von der Sekundarstufe I zu der Sekundarstufe II
 verschiebt.
-
-
 ''')
 
-fig = analysis.plot_level()
 
-st.plotly_chart(fig, use_container_width=True)
+tab1, tab2 = st.tabs(['Balkendiagramm', 'Radar'])
+
+with tab1:
+    fig = analysis.plot_level()
+    st.plotly_chart(fig, use_container_width=True)
+
+with tab2:
+    fig = analysis.plot_level_barpolar()
+    st.plotly_chart(fig, use_container_width=True)
 
 st.markdown('## Schwerpunkt nach Bundesland')
 
-fig = analysis.plot_states()
+
+level_selection = st.selectbox(label='Stufe', options=['Sekundarstufe I', 'Sekundarstufe II', 'Sekundarstufe I & II'])
+
+fig = analysis.plot_states(level=level_selection)
 
 st.plotly_chart(fig, use_container_width=True)
 
 
-#fig = analysis.plot_sentences()
+st.markdown('## Architektur und Relevanz')
 
-#st.plotly_chart(fig, use_container_width=True)
+fig = analysis.plot_duality()
+
+st.plotly_chart(fig)
 
 df_topics = analysis.df_topics
 
@@ -127,13 +141,50 @@ selection = st.selectbox(label='Thema', options=df_topics['Thema'])
 
 threshold = st.slider(label='Grenzwert', value=0.8, min_value=0.5, max_value=1.0, step=0.05)
 
+
+filter_check = st.checkbox(label='Nach Bundesland und Stufe filtern')
+
 details = analysis.get_topic(selection, threshold)
+
+if filter_check:
+    filter_state = st.selectbox(key='filter_state', label='Bundesland', options=analysis.states)
+    filter_level = st.selectbox(key='filter_level', label='Stufe', options=analysis.level)
+
+    details = details[(details['Bundesland'] == filter_state) & (details['Stufe'] == filter_level)]
+
 
 st.dataframe(details)
 
-st.markdown('## Schlüsselwortsuche')
 
-search_term = st.text_input(label='Schlüsselwort', value='Künstliche Intelligenz')
+st.markdown('## Lehrpläne')
+
+st.info('''
+Wählen Sie ein Bundesland und eine Stufe aus, um den dazugehörigen Lehrplan einzusehen.
+Beachten Sie, dass nur der Teil des Lehrplans zu sehen ist, welcher in die Analyse eingeflossen ist.
+Auf Grund der Vorverarbeitung der Texte, können Abweichungen bezüglich der Formatierung und Zeichensetzung vorkommen.
+''')
+
+selection_state = st.selectbox(label='Bundesland', options=analysis.states)
+
+selection_level = st.selectbox(label='Stufe', options=analysis.level)
+
+curriculum = analysis.get_curriculum(state=selection_state, level=selection_level)
+
+grouped = curriculum.groupby('titel')
+
+with st.expander(label='Lehrplan'):
+
+    for name, group in grouped:
+        st.subheader(name, divider=True)
+
+        s = '  \n'.join(group['raw_sentence'])
+
+        st.markdown(s)
+
+
+st.markdown('## Semantische Suche')
+
+search_term = st.text_input(label='Suchphrase', value='Künstliche Intelligenz')
 
 result = analysis.search_term(search_term=search_term)
 
