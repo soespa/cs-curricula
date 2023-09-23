@@ -120,7 +120,7 @@ with tab2:
 st.markdown('## Schwerpunkt nach Bundesland')
 
 
-level_selection = st.selectbox(label='Stufe', options=['Sekundarstufe I', 'Sekundarstufe II', 'Sekundarstufe I & II'])
+level_selection = st.selectbox(key='select_level', label='Stufe', options=['Sekundarstufe I', 'Sekundarstufe II', 'Sekundarstufe I & II'])
 
 fig = analysis.plot_states(level=level_selection)
 
