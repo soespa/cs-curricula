@@ -15,7 +15,7 @@ st.set_page_config(
 
 
 if "analysis" not in st.session_state:
-    st.session_state["analysis"] = CurriculaAnalysis
+    st.session_state["analysis"] = CurriculaAnalysis()
 
 analysis = st.session_state["analysis"]
 
