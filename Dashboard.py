@@ -1,11 +1,4 @@
-import numpy as np
 import streamlit as st
-import pandas as pd
-from bertopic import BERTopic
-import os
-import plotly.graph_objects as go
-from umap import UMAP
-from util import CurriculaAnalysis
 
 st.set_page_config(
     page_title="Topic Model",
@@ -13,11 +6,7 @@ st.set_page_config(
     initial_sidebar_state='collapsed'
 )
 
-
-if "analysis" not in st.session_state:
-    st.session_state["analysis"] = CurriculaAnalysis()
-
-analysis = st.session_state["analysis"]
+from analysis import *
 
 st.markdown('# Topic Model für die Kernlehrpläne Informatik Sekundarstufe I & II')
 
@@ -26,13 +15,13 @@ st.markdown('## Datengrundlage')
 cols = st.columns(3)
 
 with cols[0]:
-    st.metric(label='Bundesländer', value=analysis.n_states)
+    st.metric(label='Bundesländer', value=n_states())
 
 with cols[1]:
-    st.metric(label='Kernlehrpläne', value=analysis.n_curricula)
+    st.metric(label='Kernlehrpläne', value=n_curricula())
 
 with cols[2]:
-    st.metric(label='Sätze', value=analysis.n_sentences)
+    st.metric(label='Sätze', value=n_sentences())
 
 st.markdown('''
 Als Grundlage für die Analyse dienen 29 Kernlehrpläne für das Fach Informatik aus
@@ -61,7 +50,7 @@ die nicht direkt aus dem Oberthema ersichtlich sind.
 
 ''')
 
-df_topics = analysis.df_topics
+df_topics = df_topics
 
 st.dataframe(df_topics, use_container_width=True)
 
@@ -80,11 +69,11 @@ Als Grundlage für die Berechnung (und alle nachfolgenden Berechnungen) dient di
 Der Eintrag $(a_{ij})$ ist die ermittelte Wahrscheinlichkeit, dass der i-te Satz zu dem j-ten Thema gehört.
 ''')
 
-fig = analysis.get_total_topic_dist()
+fig = get_total_topic_dist()
 
 st.plotly_chart(fig, use_container_width=True)
 
-#fig = analysis.get_topic_dist_for_level()
+#fig = get_topic_dist_for_level()
 
 #st.plotly_chart(fig, use_container_width=True)
 
@@ -98,7 +87,7 @@ with st.expander(label='Details'):
     Umso ähnlicher sich zwei Themen sind, desto früher (weiter links) treffen sich die entsprechenden Zweige.
     ''')
 
-    fig = analysis.plot_topic_similarity()
+    fig = plot_topic_similarity()
 
     st.plotly_chart(fig, use_container_width=True)
 
@@ -114,11 +103,11 @@ verschiebt.
 tab1, tab2 = st.tabs(['Balkendiagramm', 'Radar'])
 
 with tab1:
-    fig = analysis.plot_level()
+    fig = plot_level()
     st.plotly_chart(fig, use_container_width=True)
 
 with tab2:
-    fig = analysis.plot_level_barpolar()
+    fig = plot_level_barpolar()
     st.plotly_chart(fig, use_container_width=True)
 
 st.markdown('## Schwerpunkt nach Bundesland')
@@ -126,18 +115,18 @@ st.markdown('## Schwerpunkt nach Bundesland')
 
 level_selection = st.selectbox(key='select_level', label='Stufe', options=['Sekundarstufe I', 'Sekundarstufe II', 'Sekundarstufe I & II'])
 
-fig = analysis.plot_states(level=level_selection)
+fig = plot_states(level=level_selection)
 
 st.plotly_chart(fig, use_container_width=True)
 
 
 st.markdown('## Architektur und Relevanz')
 
-fig = analysis.plot_duality()
+fig = plot_duality()
 
 st.plotly_chart(fig)
 
-df_topics = analysis.df_topics
+df_topics = df_topics
 
 st.markdown('## Themen im Detail')
 
@@ -148,11 +137,11 @@ threshold = st.slider(label='Grenzwert', value=0.8, min_value=0.5, max_value=1.0
 
 filter_check = st.checkbox(label='Nach Bundesland und Stufe filtern')
 
-details = analysis.get_topic(selection, threshold)
+details = get_topic(selection, threshold)
 
 if filter_check:
-    filter_state = st.selectbox(key='filter_state', label='Bundesland', options=analysis.states)
-    filter_level = st.selectbox(key='filter_level', label='Stufe', options=analysis.level)
+    filter_state = st.selectbox(key='filter_state', label='Bundesland', options=get_states())
+    filter_level = st.selectbox(key='filter_level', label='Stufe', options=get_level())
 
     details = details[(details['Bundesland'] == filter_state) & (details['Stufe'] == filter_level)]
 
@@ -168,11 +157,11 @@ Beachten Sie, dass nur der Teil des Lehrplans zu sehen ist, welcher in die Analy
 Auf Grund der Vorverarbeitung der Texte, können Abweichungen bezüglich der Formatierung und Zeichensetzung vorkommen.
 ''')
 
-selection_state = st.selectbox(label='Bundesland', options=analysis.states)
+selection_state = st.selectbox(label='Bundesland', options=get_states())
 
-selection_level = st.selectbox(label='Stufe', options=analysis.level)
+selection_level = st.selectbox(label='Stufe', options=get_level())
 
-curriculum = analysis.get_curriculum(state=selection_state, level=selection_level)
+curriculum = get_curriculum(state=selection_state, level=selection_level)
 
 grouped = curriculum.groupby('titel')
 
@@ -190,6 +179,6 @@ st.markdown('## Semantische Suche')
 
 search_term = st.text_input(label='Suchphrase', value='Künstliche Intelligenz')
 
-result = analysis.search_term(search_term=search_term)
+result = search_for(search_term=search_term)
 
 st.dataframe(result)

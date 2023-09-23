@@ -52,7 +52,7 @@ color_sek1 = 'rgb(180, 120, 20)'
 color_sek2 = 'rgb(20, 120, 180)'
 
 
-@dataclass(frozen=True)
+@dataclass
 class CurriculaAnalysis():
 
     def __init__(self):
