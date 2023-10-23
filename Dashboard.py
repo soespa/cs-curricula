@@ -61,6 +61,25 @@ st.download_button(
     mime='application/json'
 )
 
+st.markdown('## Topic Labels')
+
+st.markdown('''
+Für die Benennung der Themen haben wir ChatGPT verwendet.
+Dazu haben wir einen Prompt generieren lassen nach folgendem Schema:
+''')
+
+st.code('''
+Ich habe eine Liste von Themen, die durch die folgenden Schlüsselwörter beschrieben werden:
+
+0: <keywords_for_topic_0>
+1: <keywords_for_topic_1>
+...
+
+Auf Grundlage der obigen Informationen vergib einen Titel für jedes Thema. Gib deine Antwort in Form eines Python Dictionary!
+''',
+language=None
+)
+
 st.markdown('## Anteil der Themen insgesamt')
 
 st.markdown('''
