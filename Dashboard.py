@@ -221,14 +221,14 @@ st.markdown('''
   + Architektur nimmt zu, Relevanz nimmt ab
 + Softwareprojekte spielen kaum eine Rolle (2.17%)
 + Informatiksysteme und Gesellschaft
-  + Es geht fast ausschließlich um Datenschutz / Sicherheit
-  + Softwareethik
+  + Es geht fast ausschließlich um Datenschutz und -sicherheit
+  + Kritisches Reflektieren von Algorithmen / Software fehlt in den Lehrplänen
 + Modellieren und Programmieren stark verzahnt
-+ Programmieren
++ Themen mit hohem Programmieranteil (23,32%)
   + OOP und Modellierung (8.05%)
   + Algorithmen und Datenstrukturen (7.91%)
   + Fehlerbehebung und Debugging (2.63%)
-  + Effizienz, Berechenbark und Komplexität von Algorithmen (2.34%)
+  + Effizienz, Berechenbarkeit und Komplexität von Algorithmen (2.34%)
   + Algorithmisches Problemlösen (2.18%)
   + Variablen und Datentypen (2.05%)
 ''')

@@ -142,7 +142,6 @@ def get_total_topic_dist():
 @st.cache_resource
 def get_topic_dist_for_level():
 
-
     prop = df_props.groupby(['bundesland', 'stufe']).mean()
 
     fig = make_subplots(
@@ -184,6 +183,8 @@ def get_topic_dist_for_level():
     )
 
     return fig
+
+
 
 @st.cache_data
 def n_states():
