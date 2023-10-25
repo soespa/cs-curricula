@@ -10,6 +10,8 @@ from analysis import *
 
 st.markdown('# Topic Model für die Kernlehrpläne Informatik Sekundarstufe I & II')
 
+st.warning('''Work in progress''')
+
 st.markdown('## Datengrundlage')
 
 cols = st.columns(3)
@@ -201,3 +203,29 @@ search_term = st.text_input(label='Suchphrase', value='Künstliche Intelligenz')
 result = search_for(search_term=search_term)
 
 st.dataframe(result)
+
+
+st.markdown('## Kernaussagen')
+
+st.markdown('''
++ Künstliche Intelligenz spielt kaum eine Rolle
+  + In der Sek I nur in NRW
+  + In der Sek II nur in Sachsen
+  
++ Schwerpunkt der Inahlte verlagert sich von Sek I zu Sek II hin zu formalen / theoretischen / technischen Themen
+  + Architektur nimmt zu, Relevanz nimmt ab
+
++ Softwareprojekte spielen kaum eine Rolle (2.17%)
+
++ Informatiksysteme und Gesellschaft
+  + Es geht fast ausschließlich um Datenschutz / Sicherheit
+  + Softwareethik
+
++ Programmieren
+  + OOP und Modellierung (8.05%)
+  + Algorithmen und Datenstrukturen (7.91%)
+  + Fehlerbehebung und Debugging (2.63%)
+  + Effizienz, Berechenbark und Komplexität von Algorithmen (2.34%)
+  + Algorithmisches Problemlösen (2.18%)
+  + Variablen und Datentypen (2.05%)
+''')
