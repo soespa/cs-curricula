@@ -10,7 +10,7 @@ from analysis import *
 
 st.markdown('# Topic Model für die Kernlehrpläne Informatik Sekundarstufe I & II')
 
-st.warning('''Work in progress''')
+st.warning('''Work in progress. Alle Ergebnisse sind vorläufig und werden laufend aktualisiert.''')
 
 st.markdown('## Datengrundlage')
 
@@ -66,8 +66,8 @@ st.download_button(
 st.markdown('## Topic Labels')
 
 st.markdown('''
-Für die Benennung der Themen haben wir ChatGPT verwendet.
-Dazu haben wir einen Prompt generieren lassen nach folgendem Schema:
+Die Benennung der Themen ist mittels ChatGPT erfolgt.
+Dazu wurde ein Prompt nach folgendem Schema generiert:
 ''')
 
 st.code('''
@@ -207,20 +207,23 @@ st.dataframe(result)
 
 st.markdown('## Kernaussagen')
 
+st.warning('''
+Bei der Interpretation der Ergebnisse ist zu beachten,
+dass diese nicht die tatsächlichen (zeitlichen) Anteile der Themen widerspiegeln,
+sondern nur, wie viel über die Themen in den Lehrplänen gesprochen wird.
+''')
+
 st.markdown('''
 + Künstliche Intelligenz spielt kaum eine Rolle
   + In der Sek I nur in NRW
   + In der Sek II nur in Sachsen
-  
 + Schwerpunkt der Inahlte verlagert sich von Sek I zu Sek II hin zu formalen / theoretischen / technischen Themen
   + Architektur nimmt zu, Relevanz nimmt ab
-
 + Softwareprojekte spielen kaum eine Rolle (2.17%)
-
 + Informatiksysteme und Gesellschaft
   + Es geht fast ausschließlich um Datenschutz / Sicherheit
   + Softwareethik
-
++ Modellieren und Programmieren stark verzahnt
 + Programmieren
   + OOP und Modellierung (8.05%)
   + Algorithmen und Datenstrukturen (7.91%)
