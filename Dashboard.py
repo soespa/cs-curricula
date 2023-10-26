@@ -54,7 +54,6 @@ Im ersten Schritt mit Hilfe von BERTopic 66 Themen identifiziert, die anschließ
 wurden (siehe Tabelle), um die Übersichtlichkeit zu erhöhen.
 Dabei sollte beachtet werden, dass eine solche Zusammenführung dazu führen kann, dass ein Thema Unterthemen enthält,
 die nicht direkt aus dem Oberthema ersichtlich sind.
-
 ''')
 
 df_topics = df_topics
@@ -68,7 +67,7 @@ st.download_button(
     mime='application/json'
 )
 
-st.markdown('## Topic Labels')
+st.markdown('## Benennung der Themen')
 
 st.markdown('''
 Die Benennung der Themen ist mittels ChatGPT erfolgt.
@@ -225,6 +224,7 @@ st.markdown('''
 + Schwerpunkt der Inahlte verlagert sich von Sek I zu Sek II hin zu formalen / theoretischen / technischen Themen
   + Architektur nimmt zu, Relevanz nimmt ab
 + Softwareprojekte spielen kaum eine Rolle (2.17%)
++ Teilweise große Unterschiede zwischen den Bundesländern
 + Informatiksysteme und Gesellschaft
   + Es geht fast ausschließlich um Datenschutz und -sicherheit
   + Kritisches Reflektieren von Algorithmen / Software fehlt in den Lehrplänen
