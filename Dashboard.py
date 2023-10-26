@@ -12,6 +12,11 @@ st.markdown('# Topic Model für die Kernlehrpläne Informatik Sekundarstufe I & 
 
 st.warning('''Work in progress. Alle Ergebnisse sind vorläufig und werden laufend aktualisiert.''')
 
+st.markdown('''Bei der folgenden Analyse handelt es sich um ein Projekt zur Analyse der Kernlehrpläne Informatik der Arbeitsgruppe *Didaktik der Informatik*
+and der *Universität Paderborn*.
+Ziel des Projektes ist es, einerseits die Lehrpläne inhaltlich zu analysieren und
+andererseits den Einsatz von NLP zur Analyse von Lehrplänen zu erproben und Erfahrungen zu sammeln.''')
+
 st.markdown('## Datengrundlage')
 
 cols = st.columns(3)
