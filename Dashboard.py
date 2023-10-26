@@ -237,3 +237,12 @@ st.markdown('''
   + Algorithmisches Problemlösen (2.18%)
   + Variablen und Datentypen (2.05%)
 ''')
+
+
+
+st.markdown('''
+## Feedback
+
+Unter diesem [Link](https://umfrage-ddi.cs.uni-paderborn.de/index.php/365976?lang=de)
+haben Sie die Möglichkeit Fragen, Kommentaren, Vorschlägen, Feedback oder Kritik zu äußern.
+''')
