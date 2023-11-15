@@ -221,7 +221,7 @@ st.markdown('''
 + Künstliche Intelligenz spielt kaum eine Rolle
   + In der Sek I nur in NRW
   + In der Sek II nur in Sachsen
-+ Schwerpunkt der Inahlte verlagert sich von Sek I zu Sek II hin zu formalen / theoretischen / technischen Themen
++ Schwerpunkt der Inhalte verlagert sich von Sek I zu Sek II hin zu formalen / theoretischen / technischen Themen
   + Architektur nimmt zu, Relevanz nimmt ab
 + Softwareprojekte spielen kaum eine Rolle (2.17%)
 + Teilweise große Unterschiede zwischen den Bundesländern
@@ -230,7 +230,7 @@ st.markdown('''
   + Kritisches Reflektieren von Algorithmen / Software fehlt in den Lehrplänen
 + Modellieren und Programmieren stark verzahnt
 + Themen mit hohem Programmieranteil (23,32%)
-  + OOP und Modellierung (8.05%)
+  + Objektorientierte Modellierung und Programmierung (8.05%)
   + Algorithmen und Datenstrukturen (7.91%)
   + Fehlerbehebung und Debugging (2.63%)
   + Effizienz, Berechenbarkeit und Komplexität von Algorithmen (2.34%)
@@ -239,6 +239,130 @@ st.markdown('''
 ''')
 
 
+st.markdown('''
+## Vorläufige Interpretation
+
++ Auf Satzebene analysiert. Kategorien interessant, da durch KI generiert: Man findet Aspekte der GI-Standards und der Aufteilung in Prozess- und Inhaltsstandards wieder
++ Schwerpunkt scheint zu sein: Programmieren - oder etwas genauer: konstruierende, problemlösende Sicht auf die Wissenschaft Informatik
++ Beitrag des IU zur Bildung in der digitalen Welt von den Kategorien her etwas unklar.
+Passt zu neueren etwas kritischeren Diskussion in DDI, z.b. [Hartmann, Werner. 2023. 20x INFOS - 40 Jahre Informatikunterricht](https://dl.gi.de/items/a7296f02-f6fb-41f8-b90b-b44e28b0b340)
+
+''')
+
+st.markdown('''
+## Schlussfolgerungen
+
+KI ist ein wichtiges Thema für die Allgemeinbildung in Schulen. Es stellt den Informatikunterricht nicht nur
+wegen der starken Interdisziplinarität, sondern auch wegen des anderen Problemlösungsparadigmas vor
+konzeptionelle Herausforderungen, die explizit behandelt werden sollten.
+(Klassische Begründung (die nicht von allen so geteilt wird): Im Informatikunterricht lernt man Problemlösen,
+weil Programmieren bedeutet, das Problem genau zu analysieren und zu verstehen - dies geschieht aber
+im ML-Problemlöseparadigma nicht; daher kann es auch nicht mit dem herkömmlichen didaktisch-methodischen
+Instrumentarium vermittelt werden) siehe ggf. [LINK](https://www.landtag.nrw.de/portal/WWW/dokumentenarchiv/Dokument/MMST18-777.pdf)
+''')
+
+st.markdown('''
+## Perspektive
+
+### Von der Programmierung Mediator zur bedeutungsvollen Programmierung
+
+Die Analyse hat gezeigt, dass Programmieren, auch wenn der Begriff in den Lehrplänen zumeist vermieden wird , einen wesentlichen Anteil
+an den Themen im Informatikunterricht spielt.
+
+Insofern stellt sich die Frage: Welchen Beitrag kann Programmieren zur Allgemeinbildung leisten?
+
+Ein Blick in die Präambel der Lehrpläne zeigt: Der Wert des Fachs Informatik wird in erster Linie mit
+ dem Erwerb einer allgemeine Problemlösekompetenz (Computational Thinking) begründet.
+ Damit verbunden ist die Fähigkeit zur Abstraktion und zur Modellierung. 
+
+Programmieren dient diesbezüglich lediglich als Mediator, als Mittel zum Zweck, für den Erwerb einer solchen allgemeinen Problemlösekompetenz.
+
+Dies zeigt sich deutlich, wenn man sich die Probleme anschaut, welche im Informatikunterricht behandelt werden.
+Auch wenn sich um eine Kontextualisierung der Aufgaben bemüht wird, sind diese sind in vielen Fällen
+inner-informatischer Natur.
+Sie setzen die Existenz einer optimalen Lösung voraus (z.B. kürzester Weg in einem Graphen, effizientester Sortialgorithmus).
+
+Dahinter steht die Annahme, dass jedes Problem der Welt (durch ein Programm) gelöst werden kann, sofern das Problem nur ausreichen tief
+durchdrungen wurde, sodass es sich modellieren lässt.
+
+Im Fokus steht die Modellierung: Das Problem wird zunächst konzeptuell gelöst. Programmieren bedeutet nun lediglich, die konzeptuelle Lösung in
+eine formale Sprache (die Programmiersprache) zu übersetzen. Die Ausführung des Programms dient der Überprüfung der Lösung.
+Das eigentliche Programmieren wird zur Nebensache. Das Erlernen einer Programmiersprache ein Mittel zum Zweck.
+
+"Die Umsetzung eines informatischen Modells in ein lauffähiges Informatiksystem hat für Schülerinnen und Schüler nicht nur einen hohen Motivationswert, sondern ermöglicht ihnen auch die eigenständige Überprüfung der Angemessenheit und Wirkung des Modells im Rückbezug auf die Problemstellung."
+
+Dies gilt jedoch für die wenigsten Probleme, denen die Schüler:innen im Alltag begegnen.
+Die Probleme sind zu komplex und die Lösungen - sofern sie denn existieren - sind bestenfalls Kompromisse,
+denen eine subjektiven Wertevorstellungen zugrunde liegt.
+Die Beurteilung einer Lösung kann daher nicht objektiv erfolgen.
+Entsprechend ist auch ein Programm / der Code, welches zur Lösung des Problem geschrieben,
+ nicht objektiv sondern ist das Produkt eines Subjekts und unterliegt Normen und Wertgebungen.
+
+Durch diese idealiserte Vorstellung vom "Problemlösen", wie sie aus den Lehrplänen hervorgeht, verliert Programmieren somit
+an Bedeutung.
+
+Um diese Ziele zu erreichen müssen die Schüler:innen zunächst die Grundlagen einer Programmiersprache
+
+Ziel des Programmierunterrichts ist es daher die Schüler:innen dazu zu befähigen, Ihre konzeptionelle Lösung in einen Programmcode zu überführen.
+Die Ausführung des Programms dient lediglich der Überprüfung der Lösung und als Motivator.
+Das Erlernen einer Programmiersprache ist ein notwendiges Übel.
+
+Das Programmieren verliert aus dieser Sicht an Bedeutung. 
+
+Dabei wird das enorme Potenzial verkannt, welches eine Programmierkompetenz (Coding Literacy) leisten kann.
+
+
+Die Lebenswelt der Schüler:innen ist bereits heute von Software und Algorithmen durchdrungen,
+und täglichen kommen neue Technologien (z.B. Large-Language-Model) dazu.
+
+Eine Coding Literacy kann die Schüler:innen dazu befähigen sich neue Technologien eigenmächtig zu erschließen, weit über
+die Zeitspanne des Schulunterrichts hinaus.
+
+Die Schüler:innen sind nicht weiter nur Nutzer der Informatiksystemen (nicht weiter "ausgeliefert"), sondern lernen,
+diese nach ihren Wünschen und Formen zu beeinflussen und formen.
+Sie können lernen eigene kleine Werkzeuge zu erschaffen, die Ihnen bei alltäglichen Problem helfen.
+Sie können ihre eigenen Fragestellungen in Form von Data Science Projekten untersuchen und dabei einen kritischen und
+reflektierten Umgang mit Daten und deren Interpretation entwickeln.
+Sie können sich kreativ ausdrücken in Creative Coding Projekten. Der Code ist als ein Medium
+
+Um eine solche Transformation zu erzielen ist der bisherige Ansatz zum Programmieren lernen ungeeignet.
+
+Der Erwerb dieser Kompetenzen setzt einen anderen Ansatz zur Vermittlung von Programmieren voraus.
+Zunächst muss sich von der Idee verabschiedet werden, alle Funktionalitäten von Grund auf (from Scratch) neu zu schreiben.
+Vielmehr sollte im Sinne der gesellschaftlichen Teilhabe auf den Code aufgebaut werden.
+
+Der Einsatz von Programmier-Bibliotheken ermöglicht es den Schüler:innen Programme mit eine hoher Funktionalität
+mit wenigen Zeilen Code zu erzeugen. 
+
+Die Herausforderung ist es, die
+
+KI-Assistenten wie ChatGPT und Copilot ermöglichen es den Schüler:innen komplexe Anwendungen zu programmieren, ohne
+
+Aus allgemeinbildenden Sicht ist es weniger wichtig, dass die Schüler:innen lernen syntaktisch korrekten Code zu schreiben.
+
+Der bisherige Ansatz ist bottom-up strukturiert: Zunächst werden die Grundkonzepte 
+
+
+Diese Perspektive aufs Programmieren verkennt das Potenzial.
+
+Denken mit dem Programm (Extended Mind) / in der Programmiersprache / Interaktion
+
+Programmieren befähigt die Schüler:innen dazu
++ digitale Werkzeuge nach Ihren Wünschen und Bedürfnissen zu schaffen,
++ ihre eigenen Fragestellungen über die Welt in Form von Data Science Projekten zu untersuchen und dabei einen wissenschaftlichen Blick zu entwicklen,
++ sich kreativ auszutoben in eigenen Basterprojekten,
++ sich selbst auszudrücken in Form von kreativen Codingprojekten,
++ zur Teilnahme an einer Softwarekultur z.B. in Open Source Projekten, wobei Code ein Kommunikationsmedium 
+
+Programmieren kann als eine erweiterte Form der Interaktion mit einem Informatiksystem verstanden werden, die über
+die Benutzung hinaus geht. Der Mensch ist dem System nun nichtmehr ausgesetzt, sonder kann stattdessen kann das System
+nach seinen Wünschen beeinflussen und formen, oder ein alternatives System erschaffen.
+
+Um die Schüler:innen auf
+
+Solch eine Partizipation kann auf vielfältige Weise erzielt werden: Die Schüler:innen 
+
+''')
 
 st.markdown('''
 ## Feedback
