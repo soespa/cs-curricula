@@ -1,7 +1,0 @@
-[server]
-headless = true
-
-
-
-[client]
-showErrorDetails = true
